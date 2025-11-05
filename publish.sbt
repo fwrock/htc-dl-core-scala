@@ -1,28 +1,43 @@
 // Configuração para publicação da biblioteca
-ThisBuild / organization := "com.htc"
+ThisBuild / organization := "io.github.fwrock"
 ThisBuild / scalaVersion := "3.3.6"
-ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / version := "0.1.0"
 
 // Metadados da biblioteca
-ThisBuild / homepage := Some(url("https://github.com/htc/htc-dl"))
+ThisBuild / homepage := Some(url("https://github.com/fwrock/htc-dl"))
 ThisBuild / scmInfo := Some(
   ScmInfo(
-    url("https://github.com/htc/htc-dl"),
-    "scm:git@github.com:htc/htc-dl.git"
+    url("https://github.com/fwrock/htc-dl"),
+    "scm:git@github.com:fwrock/htc-dl.git"
   )
 )
 ThisBuild / developers := List(
   Developer(
-    id = "htc-team",
-    name = "HTC Development Team",
-    email = "dev@htc.com",
-    url = url("https://htc.com")
+    id = "fwrock",
+    name = "Francisco Wallison Carlos Rocha",
+    email = "wallison.rocha@usp.br",
+    url = url("https://github.com/fwrock")
   )
 )
 
 ThisBuild / licenses := List(
-  "Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")
+  "MIT" -> new URL("https://opensource.org/licenses/MIT")
 )
+
+// Publishing configuration
+publishTo := {
+  val nexus = "https://s01.oss.sonatype.org/"
+  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+
+publishMavenStyle := true
+Test / publishArtifact := false
+pomIncludeRepository := { _ => false }
+
+// Sonatype settings
+sonatypeProfileName := "io.github.fwrock"
+sonatypeCredentialHost := "s01.oss.sonatype.org"
 
 lazy val root = (project in file("."))
   .settings(
@@ -75,13 +90,3 @@ lazy val root = (project in file("."))
     )
   )
 
-// Configurações para publicação
-publishTo := {
-  val nexus = "https://s01.oss.sonatype.org/"
-  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
-
-publishMavenStyle := true
-Test / publishArtifact := false
-pomIncludeRepository := { _ => false }

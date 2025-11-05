@@ -1,12 +1,11 @@
-ThisBuild / version := "0.1.0-SNAPSHOT"
-
+ThisBuild / version := "0.1.0"
 ThisBuild / scalaVersion := "3.3.6"
+ThisBuild / organization := "io.github.fwrock"
 
 lazy val root = (project in file("."))
   .settings(
     name := "htc-dl",
-    organization := "com.htc",
-    description := "HTC Digital Twin Language Core Library",
+    description := "HTC Digital Twin Language - Parser, validator and code generator for HTCDL models",
     
     libraryDependencies ++= Seq(
       // JSON processing
