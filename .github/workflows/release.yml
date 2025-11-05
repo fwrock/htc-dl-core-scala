@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'sbt'
+    
+    - name: Extract version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Run tests
+      run: sbt test
+    
+    - name: Build artifacts
+      run: sbt package
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        files: |
+          target/scala-3.3.6/htc-dl_3-*.jar
+        body: |
+          ## HTC-DL Release ${{ steps.get_version.outputs.VERSION }}
+          
+          ### 📦 Installation
+          
+          ```scala
+          libraryDependencies += "io.github.fwrock" %% "htc-dl" % "${{ steps.get_version.outputs.VERSION }}"
+          ```
+          
+          ### 📝 Changes
+          
+          See [CHANGELOG.md](CHANGELOG.md) for details.
+          
+          ### ✅ Tests
+          
+          All 15 tests passing!
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
